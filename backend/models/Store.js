@@ -1,23 +1,21 @@
-// models/Store.js
-const { DataTypes } = require("sequelize");
-const sequelize = require("../config/db");
+module.exports = (sequelize, DataTypes) => {
+  const Store = sequelize.define("Store", {
+    name: DataTypes.STRING,
+    location: DataTypes.STRING,
+    owner_id: DataTypes.INTEGER,
+    image_url: DataTypes.STRING,
+    category: DataTypes.STRING,
+    contact: DataTypes.STRING,
+    description: DataTypes.TEXT,
+  });
 
-const Store = sequelize.define('Store', {
-  name: { type: DataTypes.STRING, allowNull: false },
-  location: { type: DataTypes.STRING, allowNull: false },
-  owner_id: { type: DataTypes.INTEGER },
+  Store.associate = (models) => {
+    Store.hasMany(models.Rating, { foreignKey: "store_id", as: "ratings" });
+  };
 
-  // Extra fields
-  image_url: { type: DataTypes.STRING },
-  category: { type: DataTypes.STRING },
-  contact: { type: DataTypes.STRING },
-  description: { type: DataTypes.TEXT },
-}, { 
-  tableName: 'stores',
-  timestamps: false 
-});
+  return Store;
+};
 
-module.exports = Store;
 
 
 

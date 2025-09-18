@@ -1,0 +1,78 @@
+.store-rating-container {
+  width: 80%;
+  margin: auto;
+  font-family: Arial, sans-serif;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.header h2 {
+  flex: 1;
+  text-align: center;
+}
+
+.search-bar {
+  flex: 2;
+  padding: 10px;
+  margin: 0 20px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+}
+
+.logout-btn {
+  background-color: #e63946;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.store-list {
+  margin-top: 20px;
+}
+
+.store-card {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #eee;
+  padding: 15px 0;
+}
+
+.store-info h3 {
+  margin: 0;
+}
+
+.ratings {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+}
+
+.stars {
+  font-size: 18px;
+  color: gold;
+}
+
+.submit-btn {
+  background-color: #ff6600;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.modify-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+}

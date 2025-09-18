@@ -1,104 +1,107 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import "./StoreRating.css";
 
-const StoreRating = () => {
+function StoreRating() {
   const [stores, setStores] = useState([]);
-  const [search, setSearch] = useState(""); // search query
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    // Fetch stores with ratings from backend
     axios
-      .get("http://localhost:3000/stores-with-ratings")
-      .then((res) => setStores(res.data))
-      .catch((err) => console.error("Error fetching stores:", err));
+      .get("http://localhost:5000/api/stores")
+      .then((response) => {
+        if (response.data.length === 0) {
+          // fallback dummy data
+          setStores([
+            { id: 1, name: "Store Name", address: "175, Nustre Cevaen", overallRating: 4.5, userRating: 4 },
+            { id: 2, name: "Wiare Name", address: "123, Vilera, Sesem", overallRating: 4.5, userRating: 2 },
+            { id: 3, name: "Unod Name", address: "125, Nadion", overallRating: 4.5, userRating: 5 },
+          ]);
+        } else {
+          setStores(response.data);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching stores:", error);
+        // fallback dummy data on error
+        setStores([
+          { id: 1, name: "Store Name", address: "175, Nustre Cevaen", overallRating: 4.5, userRating: 4 },
+          { id: 2, name: "Wiare Name", address: "123, Vilera, Sesem", overallRating: 4.5, userRating: 2 },
+          { id: 3, name: "Unod Name", address: "125, Nadion", overallRating: 4.5, userRating: 5 },
+        ]);
+      });
   }, []);
 
-  // Filtered stores based on search query
   const filteredStores = stores.filter((store) =>
-    store.name.toLowerCase().includes(search.toLowerCase())
+    store.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  return (
-    <div style={{ width: "80%", margin: "auto", marginTop: "20px" }}>
-      <h2 style={{ textAlign: "center" }}>Store Rating</h2>
+  const handleRating = (id, newRating) => {
+    setStores((prev) =>
+      prev.map((store) =>
+        store.id === id ? { ...store, userRating: newRating } : store
+      )
+    );
+  };
 
-      {/* Search Bar */}
-      <div style={{ display: "flex", justifyContent: "center", margin: "20px 0" }}>
+  return (
+    <div className="store-rating-container">
+      <div className="header">
+        <h2>Store Rating</h2>
         <input
           type="text"
           placeholder="Search for stores..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          style={{
-            width: "70%",
-            padding: "10px",
-            borderRadius: "25px",
-            border: "1px solid #ccc",
-          }}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="search-bar"
         />
-        <button
-          style={{
-            marginLeft: "10px",
-            backgroundColor: "red",
-            color: "white",
-            padding: "10px 20px",
-            border: "none",
-            borderRadius: "25px",
-            cursor: "pointer",
-          }}
-        >
-          Logout
-        </button>
+        <button className="logout-btn">Logout</button>
       </div>
 
-      {/* Store List */}
-      {filteredStores.length > 0 ? (
-        filteredStores.map((store) => (
-          <div
-            key={store.id}
-            style={{
-              borderBottom: "1px solid #ddd",
-              padding: "15px 0",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <div>
+      <div className="store-list">
+        {filteredStores.map((store) => (
+          <div key={store.id} className="store-card">
+            <div className="store-info">
               <h3>{store.name}</h3>
-              <p>{store.location}</p>
+              <p>{store.address}</p>
             </div>
-            <div style={{ textAlign: "center" }}>
-              <p>Overall Rating</p>
-              <p>⭐ {parseFloat(store.average_rating || 0).toFixed(1)} / 5</p>
-            </div>
-            <div>
-              <p>Your Rating</p>
-              <button
-                style={{
-                  backgroundColor: store.average_rating ? "blue" : "orange",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "5px",
-                  padding: "5px 10px",
-                  cursor: "pointer",
-                }}
-              >
-                {store.average_rating ? "Modify Rating" : "Submit Rating"}
-              </button>
+
+            <div className="ratings">
+              <div className="overall">
+                <span>Overall Rating</span>
+                <div className="stars">⭐⭐⭐⭐☆</div>
+                <p>{store.overallRating} / 5</p>
+              </div>
+
+              <div className="your-rating">
+                <span>Your Rating</span>
+                <div className="stars">
+                  {"⭐".repeat(store.userRating || 0)}
+                </div>
+                <button
+                  className={store.userRating ? "modify-btn" : "submit-btn"}
+                  onClick={() => handleRating(store.id, 4)} // example static rating
+                >
+                  {store.userRating ? "Modify Rating" : "Submit Rating"}
+                </button>
+              </div>
             </div>
           </div>
-        ))
-      ) : (
-        <p style={{ textAlign: "center", marginTop: "20px" }}>
-          No stores found.
-        </p>
-      )}
+        ))}
+
+        {filteredStores.length === 0 && (
+          <p style={{ textAlign: "center", marginTop: "20px" }}>
+            No stores found.
+          </p>
+        )}
+      </div>
     </div>
   );
-};
+}
 
 export default StoreRating;
+
+
 
 
 
